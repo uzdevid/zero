@@ -1,18 +1,17 @@
 <?php
 
-namespace Zero\Router;
+namespace Zero\Http\Router;
 
 use Attribute;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-readonly class Route {
+final readonly class Post extends Route {
     /**
      * @param string $path
-     * @param array $methods
      */
     public function __construct(
-        public string $path,
-        public array $methods
+        public string $path
     ) {
+        parent::__construct($this->path, ['POST']);
     }
 }

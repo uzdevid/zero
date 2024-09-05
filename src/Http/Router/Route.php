@@ -1,17 +1,18 @@
 <?php
 
-namespace Zero\Router;
+namespace Zero\Http\Router;
 
 use Attribute;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-final readonly class Get extends Route {
+readonly class Route {
     /**
      * @param string $path
+     * @param array $methods
      */
     public function __construct(
-        public string $path
+        public string $path,
+        public array $methods
     ) {
-        parent::__construct($this->path, ['GET']);
     }
 }
