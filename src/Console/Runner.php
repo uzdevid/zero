@@ -2,14 +2,14 @@
 
 namespace Zero\Console;
 
-use Zero\ApplicationInterface;
+use Zero\RunnerInterface;
 
-class ConsoleApplication implements ApplicationInterface {
+readonly class Runner implements RunnerInterface {
     /**
      * @param string $rootPath
      */
     public function __construct(
-        public readonly string $rootPath
+        public string $rootPath
     ) {
     }
 

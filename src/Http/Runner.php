@@ -2,9 +2,9 @@
 
 namespace Zero\Http;
 
-use Zero\ApplicationInterface;
+use Zero\RunnerInterface;
 
-class HttpApplication implements ApplicationInterface {
+class Runner implements RunnerInterface {
     /**
      * @param string $rootPath
      */

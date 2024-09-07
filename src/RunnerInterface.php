@@ -2,7 +2,7 @@
 
 namespace Zero;
 
-interface ApplicationInterface {
+interface RunnerInterface {
     public function __construct(
         string $path
     );

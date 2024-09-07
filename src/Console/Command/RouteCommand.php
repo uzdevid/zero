@@ -9,18 +9,17 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
 use RegexIterator;
-use Zero\Console\Commander\Command;
+use Zero\Console\Runner;
 use Zero\Http\Router\Route;
 
 class RouteCommand {
     /**
      * @throws ReflectionException
      */
-    #[Command('route:optimize')]
-    public function optimize() {
+    public function optimize(Runner $application) {
         $routes = [];
 
-        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($projectDir, FilesystemIterator::SKIP_DOTS));
+        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($application->rootPath, FilesystemIterator::SKIP_DOTS));
 
         $controllerFiles = new RegexIterator($files, '/Controller\.php$/');
 
@@ -37,7 +36,10 @@ class RouteCommand {
                 foreach ($attributes as $attribute) {
                     /** @var Route $route */
                     $route = $attribute->newInstance();
-                    $routes[$route->method][$route->path] = [$controllerClass, $method->getName()];
+                    foreach ($route->methods as $methodName) {
+                        $routes[$methodName][$route->path] = [$controllerClass, $method->getName()];
+                    }
+
                 }
             }
         }
