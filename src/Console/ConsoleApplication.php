@@ -1,10 +1,10 @@
 <?php
 
-namespace Zero\Http;
+namespace Zero\Console;
 
 use Zero\ApplicationInterface;
 
-class HttpApplication implements ApplicationInterface {
+class ConsoleApplication implements ApplicationInterface {
     /**
      * @param string $rootPath
      */
