@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'UzDevid\\Zero\\' => array($baseDir . '/src'),
+    'Zero\\' => array($baseDir . '/src'),
 );

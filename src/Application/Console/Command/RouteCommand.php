@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zero\Console\Command;
+namespace Zero\Application\Console\Command;
 
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
@@ -11,14 +11,14 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
 use RegexIterator;
-use Zero\Console\Runner;
-use Zero\Http\Router\Route;
+use Zero\Application\Console\Application;
+use Zero\Application\Http\Router\Route;
 
 class RouteCommand {
     /**
      * @throws ReflectionException
      */
-    public function optimize(Runner $application) {
+    public function optimize(Application $application) {
         $routes = [];
 
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($application->rootPath, FilesystemIterator::SKIP_DOTS));
@@ -36,7 +36,7 @@ class RouteCommand {
                 $attributes = $method->getAttributes(Route::class, ReflectionAttribute::IS_INSTANCEOF);
 
                 foreach ($attributes as $attribute) {
-                    /** @var Route $route */
+                    /** @var \Zero\Application\Http\Router\Route $route */
                     $route = $attribute->newInstance();
                     foreach ($route->methods as $methodName) {
                         $routes[$methodName][$route->path] = [$controllerClass, $method->getName()];

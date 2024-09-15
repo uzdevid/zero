@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Zero\Console;
+namespace Zero\Application\Http;
 
-use Zero\RunnerInterface;
+use Zero\Application\RunnerInterface;
 
-readonly class Runner implements RunnerInterface {
+class Runner implements RunnerInterface {
     /**
      * @param string $rootPath
      */
     public function __construct(
-        public string $rootPath
+        public readonly string $rootPath
     ) {
     }
 

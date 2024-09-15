@@ -1,9 +1,9 @@
 <?php return array(
     'root' => array(
         'name' => 'uzdevid/zero',
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
-        'reference' => NULL,
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
+        'reference' => 'a74a88c472829ba070252f8479c7c9b919a686b0',
         'type' => 'package',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'uzdevid/zero' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
-            'reference' => NULL,
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
+            'reference' => 'a74a88c472829ba070252f8479c7c9b919a686b0',
             'type' => 'package',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

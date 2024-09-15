@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zero\Http;
+namespace Zero\Application\Http;
 
 class Application {
 

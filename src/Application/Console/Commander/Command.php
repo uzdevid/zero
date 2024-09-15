@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zero\Console\Commander;
+namespace Zero\Application\Console\Commander;
 
 use Attribute;
 

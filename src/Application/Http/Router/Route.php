@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zero\Http\Router;
+namespace Zero\Application\Http\Router;
 
 use Attribute;
 
