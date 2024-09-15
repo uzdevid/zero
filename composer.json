@@ -14,7 +14,9 @@
   },
   "autoload": {
     "psr-4": {
-      "Zero\\": "src"
+      "Zero\\": "src",
+      "Zero\\Console\\": "src/Application/Console",
+      "Zero\\Http": "src/Application/Http"
     }
   }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zero\Application\Http;
+namespace Zero\Http;
 
 use Zero\Application\RunnerInterface;
 
