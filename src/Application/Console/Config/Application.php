@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-use Zero\Application\Console\Command\RouteCommand;
+use Zero\Console\Command\RouteCommand;
 
 return [
     'commander' => [

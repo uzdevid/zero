@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zero\Application\Console\Command;
+namespace Zero\Console\Command;
 
 use FilesystemIterator;
 use RecursiveDirectoryIterator;
@@ -11,8 +11,8 @@ use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
 use RegexIterator;
-use Zero\Application\Console\Application;
-use Zero\Application\Http\Router\Route;
+use Zero\Console\Application;
+use Zero\Http\Router\Route;
 
 class RouteCommand {
     /**
