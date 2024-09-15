@@ -5,7 +5,7 @@ namespace Zero\Application;
 
 interface RunnerInterface {
     public function __construct(
-        string $path
+        string $rootPath
     );
     public function run(): void;
 }
