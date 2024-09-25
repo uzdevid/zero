@@ -3,13 +3,11 @@ declare(strict_types=1);
 
 namespace Zero\Di;
 
-use Exception;
 use Psr\Container\ContainerInterface;
-use ReflectionClass;
 use ReflectionException;
-use ReflectionNamedType;
 use RuntimeException;
-use function is_null;
+use function is_array;
+use function is_callable;
 
 final class Container implements ContainerInterface {
     private DefinitionStorage $definitionStorage;
@@ -56,63 +54,29 @@ final class Container implements ContainerInterface {
      * @return mixed
      * @throws ReflectionException
      */
-    private function build(string $id): mixed {
-        if ($this->definitionStorage->has($id)) {
-            $definition = $this->definitionStorage->get($id);
-        } elseif (class_exists($id)) {
-            $definition = $id;
-        } else {
+    public function build(string $id): mixed {
+        if ($this->definitionStorage->has($id) === false) {
+            if (class_exists($id)) {
+                return (new ClassDefinition)->build($this, $id);
+            }
+
             throw new RuntimeException("Service '$id' doesn't exist in storage.");
         }
+
+        $definition = $this->definitionStorage->get($id);
 
         if (is_callable($definition)) {
             return $definition($this);
         }
 
-        $reflectionClass = new ReflectionClass($definition);
-
-        if (!$reflectionClass->isInstantiable()) {
-            throw new RuntimeException("Service `$id` is not instantiable.");
+        if (is_array($definition) && isset($definition['class'])) {
+            return (new ArrayDefinition)->build($this, $definition);
         }
 
-        $constructor = $reflectionClass->getConstructor();
-
-        if (is_null($constructor)) {
-            return new $id;
+        if (class_exists($definition)) {
+            return (new ClassDefinition)->build($this, $definition);
         }
 
-        $parameters = $constructor->getParameters();
-
-        $dependencies = [];
-
-        foreach ($parameters as $parameter) {
-            $type = $parameter->getType();
-
-            if (!$type instanceof ReflectionNamedType || $type->isBuiltin()) {
-                if ($parameter->isDefaultValueAvailable()) {
-                    $dependencies[] = $parameter->getDefaultValue();
-                } else if ($parameter->isVariadic()) {
-                    $dependencies[] = [];
-                } else {
-                    throw new RuntimeException("Unresolvable dependency [$parameter] in class {$parameter->getDeclaringClass()?->getName()}");
-                }
-            }
-
-            $name = $type->getName();
-
-            try {
-                $dependencies[] = $this->get($name);
-            } catch (Exception $e) {
-                if ($parameter->isOptional()) {
-                    $dependencies[] = $parameter->getDefaultValue();
-                } else {
-                    $dependency = $this->build($parameter->getType()?->getName());
-                    $this->addDefinition($name, $dependency);
-                    $dependencies[] = $dependency;
-                }
-            }
-        }
-
-        return $reflectionClass->newInstanceArgs($dependencies);
+        return $definition;
     }
 }
