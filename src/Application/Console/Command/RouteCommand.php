@@ -9,12 +9,16 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionAttribute;
 use ReflectionClass;
+use ReflectionException;
 use RegexIterator;
 use Zero\Console\Application;
-use Zero\Console\Commander\Command;
+use Zero\Console\Router\Command;
 use Zero\Http\Router\Route;
 
 class RouteCommand {
+    /**
+     * @throws ReflectionException
+     */
     #[Command('route:optimize')]
     public function optimize(Application $application): void {
         $routes = [];
@@ -34,7 +38,7 @@ class RouteCommand {
                 $attributes = $method->getAttributes(Route::class, ReflectionAttribute::IS_INSTANCEOF);
 
                 foreach ($attributes as $attribute) {
-                    /** @var \Zero\Application\Http\Router\Route $route */
+                    /** @var Route $route */
                     $route = $attribute->newInstance();
                     foreach ($route->methods as $methodName) {
                         $routes[$methodName][$route->path] = [$controllerClass, $method->getName()];
