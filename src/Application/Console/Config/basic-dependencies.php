@@ -7,10 +7,11 @@ use Zero\Console\Router\Router;
 return [
     Application::class => [
         'class' => Application::class,
-        '__construct()' => ['Zero Console Application']
+        '__construct()' => [
+            'name' => 'Zero Console Application'
+        ]
     ],
     RouterInterface::class => [
-        'class' => Router::class,
-        '__construct()' => [1, 2, 3]
+        'class' => Router::class
     ],
 ];
