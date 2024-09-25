@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Zero\Console;
 
-class Application {
+readonly class Application {
     /**
      * @param string $name
      */
     public function __construct(
-        public readonly string $name
+        public string $name
     ) {
     }
 }

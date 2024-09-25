@@ -1,14 +1,25 @@
 <?php
+declare(strict_types=1);
 
 namespace Zero\Di;
 
+use Exception;
+use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionNamedType;
 use RuntimeException;
 use function is_null;
 
-class Container {
+final class Container implements ContainerInterface {
+    private DefinitionStorage $definitionStorage;
     private array $instances = [];
+
+    public function __construct() {
+        $this->definitionStorage = new DefinitionStorage([
+            ContainerInterface::class => $this
+        ]);
+    }
 
     /**
      * @param string $id
@@ -16,38 +27,89 @@ class Container {
      * @return void
      */
     public function addDefinition(string $id, mixed $definition): void {
-        $this->instances[$id] = $definition;
+        $this->definitionStorage->set($id, $definition);
     }
 
     /**
      * @param string $id
-     * @return mixed|object|null
+     * @return mixed
      * @throws ReflectionException
      */
     public function get(string $id): mixed {
         if (!array_key_exists($id, $this->instances)) {
-            throw new RuntimeException(sprintf("Service '%s' not found in the container.", $id));
+            $this->instances[$id] = $this->build($id);
         }
 
-        $className = $this->instances[$id];
+        return $this->instances[$id];
+    }
 
-        $reflectionClass = new ReflectionClass($className);
+    /**
+     * @param string $id
+     * @return bool
+     */
+    public function has(string $id): bool {
+        return $this->definitionStorage->has($id);
+    }
+
+    /**
+     * @param string $id
+     * @return mixed
+     * @throws ReflectionException
+     */
+    private function build(string $id): mixed {
+        if ($this->definitionStorage->has($id)) {
+            $definition = $this->definitionStorage->get($id);
+        } elseif (class_exists($id)) {
+            $definition = $id;
+        } else {
+            throw new RuntimeException("Service '$id' doesn't exist in storage.");
+        }
+
+        if (is_callable($definition)) {
+            return $definition($this);
+        }
+
+        $reflectionClass = new ReflectionClass($definition);
+
+        if (!$reflectionClass->isInstantiable()) {
+            throw new RuntimeException("Service `$id` is not instantiable.");
+        }
+
         $constructor = $reflectionClass->getConstructor();
 
         if (is_null($constructor)) {
-            return new $className;
+            return new $id;
         }
 
         $parameters = $constructor->getParameters();
+
         $dependencies = [];
 
         foreach ($parameters as $parameter) {
-            $dependencyClass = $parameter->getType()?->getName();
+            $type = $parameter->getType();
 
-            if (!is_null($dependencyClass) && class_exists($dependencyClass)) {
-                $dependencies[] = $this->get($dependencyClass);
-            } else {
-                throw new RuntimeException(sprintf("Cannot resolve dependency '%s' for service '%s'", $parameter->getName(), $id));
+            if (!$type instanceof ReflectionNamedType || $type->isBuiltin()) {
+                if ($parameter->isDefaultValueAvailable()) {
+                    $dependencies[] = $parameter->getDefaultValue();
+                } else if ($parameter->isVariadic()) {
+                    $dependencies[] = [];
+                } else {
+                    throw new RuntimeException("Unresolvable dependency [$parameter] in class {$parameter->getDeclaringClass()?->getName()}");
+                }
+            }
+
+            $name = $type->getName();
+
+            try {
+                $dependencies[] = $this->get($name);
+            } catch (Exception $e) {
+                if ($parameter->isOptional()) {
+                    $dependencies[] = $parameter->getDefaultValue();
+                } else {
+                    $dependency = $this->build($parameter->getType()?->getName());
+                    $this->addDefinition($name, $dependency);
+                    $dependencies[] = $dependency;
+                }
             }
         }
 

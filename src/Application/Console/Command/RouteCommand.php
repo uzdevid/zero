@@ -9,16 +9,14 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionAttribute;
 use ReflectionClass;
-use ReflectionException;
 use RegexIterator;
 use Zero\Console\Application;
+use Zero\Console\Commander\Command;
 use Zero\Http\Router\Route;
 
 class RouteCommand {
-    /**
-     * @throws ReflectionException
-     */
-    public function optimize(Application $application) {
+    #[Command('route:optimize')]
+    public function optimize(Application $application): void {
         $routes = [];
 
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($application->rootPath, FilesystemIterator::SKIP_DOTS));

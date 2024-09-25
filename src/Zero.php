@@ -3,6 +3,4 @@ declare(strict_types=1);
 
 namespace Zero;
 
-class Zero {
-
-}
+class Zero { }
