@@ -12,6 +12,7 @@ return [
         ]
     ],
     RouterInterface::class => [
-        'class' => Router::class
+        'class' => Router::class,
+        '__construct()' => [__DIR__ . '/../Command']
     ],
 ];
